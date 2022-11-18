@@ -3,6 +3,7 @@ package com.wildcodeschool.spring.security.persistence.entities;
 
 
 import com.wildcodeschool.spring.security.persistence.enums.RoleEnum;
+import com.wildcodeschool.spring.security.utils.BCryptManagerUtil;
 import lombok.Data;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
@@ -38,9 +40,6 @@ public class User implements UserDetails {
 
 
 	private static final long serialVersionUID = 1L;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -97,7 +96,7 @@ public class User implements UserDetails {
     public User(String username, String password, String firstname, String lastname, Collection<RoleEnum> roles) {
         this.username = username;
         // TODO
-        this.password = this.passwordEncoder.encode(password);
+        this.password = BCryptManagerUtil.passwordencoder().encode(password);
         this.firstname = firstname;
         this.lastname = lastname;
         this.accountNonExpired = true;
@@ -200,7 +199,7 @@ public class User implements UserDetails {
 
 	public void setPassword(String password) {
         if (!password.isEmpty()) {
-        	this.password = this.passwordEncoder.encode(password);
-        }
+			this.password = BCryptManagerUtil.passwordencoder().encode(password);
+		}
     }
 }
